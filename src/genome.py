@@ -85,6 +85,11 @@ class Genome(ABC):
         ...  # not implemented yet
 
 
+
+
+
+
+
 class ListGenome(Genome):
     """
     Representation of a genome.
@@ -94,7 +99,13 @@ class ListGenome(Genome):
 
     def __init__(self, n: int):
         """Create a new genome with length n."""
-        ...  # FIXME
+        self.lst = []
+        self.ID = []
+        for i in range(n):
+            self.lst.append("-")
+            self.ID.append(0)
+        self.active_lst = []
+        self.count = 0 
 
     def insert_te(self, pos: int, length: int) -> int:
         """
@@ -109,8 +120,22 @@ class ListGenome(Genome):
 
         Returns a new ID for the transposable element.
         """
-        ...  # FIXME
-        return -1
+        self.count += 1 
+        if self.lst[pos] == "A":
+            self.disable_te(self.ID[pos])
+        
+        lst1, ID1 = self.lst[0:pos], self.ID[0:pos]
+        lst2, ID2 = self.lst[pos:], self.ID[pos:]
+        for i in range(length):
+            lst1.append("A")
+            ID1.append(self.count)
+        self.lst = lst1 + lst2
+        self.ID = ID1 + ID2 
+
+        self.active_lst.append(self.count)
+
+        return self.count
+
 
     def copy_te(self, te: int, offset: int) -> int | None:
         """
@@ -126,7 +151,24 @@ class ListGenome(Genome):
 
         If te is not active, return None (and do not copy it).
         """
-        ...  # FIXME
+
+        for i in range(len(self.ID)):
+            if self.ID[i] == te:
+                index_ID = i 
+                break
+        
+        if self.lst[index_ID] == "x":
+            return None 
+    
+        len_ID = 0 
+        for i in range(len(self.ID)):
+            if self.ID[i] == te:
+                len_ID += 1 
+
+        return self.insert_te(index_ID + offset, len_ID)
+
+
+
 
     def disable_te(self, te: int) -> None:
         """
@@ -136,17 +178,20 @@ class ListGenome(Genome):
         TEs are already inactive, so there is no need to do anything
         for those.
         """
-        ...  # FIXME
+        for i in range(len(self.ID)):
+            if self.ID[i] == te:
+                self.lst[i] = "x"
+        
+        self.active_lst.remove(te)
+        
 
     def active_tes(self) -> list[int]:
         """Get the active TE IDs."""
-        ...  # FIXME
-        return []
+        return self.active_lst 
 
     def __len__(self) -> int:
         """Current length of the genome."""
-        ...  # FIXME
-        return 0
+        return len(self.lst)
 
     def __str__(self) -> str:
         """
@@ -160,7 +205,26 @@ class ListGenome(Genome):
         represented with the character '-', active TEs with 'A', and disabled
         TEs with 'x'.
         """
-        return "FIXME"
+        return "".join(self.lst)
+
+
+
+#geome = ListGenome(20)
+#print(geome)
+#geome.insert_te(10, 10)
+#print(geome)
+#geome.insert_te(3, 10)
+#print(geome)
+
+#print(geome.active_tes())
+
+#geome.insert_te(4, 10)
+#print(geome)
+
+#print(geome.active_tes())
+#geome.copy_te(2,12)
+#print(geome)
+#print(geome.active_tes())
 
 
 class LinkedListGenome(Genome):
@@ -172,7 +236,16 @@ class LinkedListGenome(Genome):
 
     def __init__(self, n: int):
         """Create a new genome with length n."""
-        ...  # FIXME
+        self.lst = []
+        self.index_next = []
+        self.ID = []
+        for i in range(n):
+            self.lst.append("-")
+            self.index_next.append((i+1) % n)
+            self.ID.append(0)
+        
+        self.active_lst = []
+        self.count = 0 
 
     def insert_te(self, pos: int, length: int) -> int:
         """
@@ -187,8 +260,35 @@ class LinkedListGenome(Genome):
 
         Returns a new ID for the transposable element.
         """
-        ...  # FIXME
-        return -1
+        
+        self.count += 1 
+
+        i = 0
+        count = 0 
+        for _ in range(pos-1):
+            i = self.index_next[i]
+            count+=1
+        
+        if self.lst[i] == "A":
+            self.disable_te(self.ID[i])
+        
+        old_next = self.index_next[i]
+        self.index_next[i] = len(self.lst)
+        for _ in range(length-1):
+            self.index_next.append(len(self.index_next)+1)
+        self.index_next.append(old_next)
+
+
+        for i in range(length):
+            self.lst.append("A")
+            self.ID.append(self.count)
+
+        self.active_lst.append(self.count)
+
+        #print(self.index_next)
+
+        return self.count
+
 
     def copy_te(self, te: int, offset: int) -> int | None:
         """
@@ -203,8 +303,24 @@ class LinkedListGenome(Genome):
         wrap around, since the genome is circular.
 
         If te is not active, return None (and do not copy it).
-        """
-        ...  # FIXME
+        """ 
+        if te not in self.active_lst:
+            return None
+
+        i = 0
+        count = 0
+        while self.ID[i] != te:
+            i = self.index_next[i]
+            count += 1
+        te_pos = count 
+        count = 0
+        while self.ID[i] == te:
+            i = self.index_next[i]
+            count += 1
+        print(self.index_next)
+        print(te_pos)
+        return self.insert_te(len(self.index_next) + (te_pos+offset), count)
+
 
     def disable_te(self, te: int) -> None:
         """
@@ -214,17 +330,19 @@ class LinkedListGenome(Genome):
         TEs are already inactive, so there is no need to do anything
         for those.
         """
-        ...  # FIXME
+        for i in range(len(self.ID)):
+            if self.ID[i] == te:
+                self.lst[i] = "x"
+        
+        self.active_lst.remove(te)
 
     def active_tes(self) -> list[int]:
         """Get the active TE IDs."""
-        # FIXME
-        return []
+        return self.active_lst
 
     def __len__(self) -> int:
         """Current length of the genome."""
-        # FIXME
-        return 0
+        return len(self.lst)
 
     def __str__(self) -> str:
         """
@@ -238,4 +356,28 @@ class LinkedListGenome(Genome):
         represented with the character '-', active TEs with 'A', and disabled
         TEs with 'x'.
         """
-        return "FIXME"
+        self.new = []
+        i = 0
+        while len( self.new) != len(self.lst): 
+            self.new.append(self.lst[i])
+            i = self.index_next[i]
+        return "".join( self.new)
+
+#geome = LinkedListGenome(4)
+#print(geome)
+##geome.insert_te(1, 2)
+#print(geome)
+#print(geome.active_tes())
+#geome.insert_te(2, 2)
+#print(geome)
+
+#geome2 = LinkedListGenome(20)
+#print(geome2)
+#geome2.insert_te(5, 10) 
+#print(geome2)
+#geome2.insert_te(10, 10)
+#print(geome2)
+#geome2.copy_te(2, 20)
+#print(geome2)
+#geome2.copy_te(2, -15)
+#print(geome2)
