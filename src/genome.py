@@ -8,6 +8,7 @@ from abc import (
 )
 
 
+
 class Genome(ABC):
     """Representation of a circular enome."""
 
@@ -120,6 +121,9 @@ class ListGenome(Genome):
 
         Returns a new ID for the transposable element.
         """
+        if pos > len(self.lst):
+            pos = pos % len(self.lst)
+
         self.count += 1 
         if self.lst[pos] == "A":
             self.disable_te(self.ID[pos])
@@ -209,10 +213,10 @@ class ListGenome(Genome):
 
 
 
-#geome = ListGenome(20)
-#print(geome)
-#geome.insert_te(10, 10)
-#print(geome)
+geome = ListGenome(20)
+print(geome)
+geome.insert_te(40, 10)
+print(geome)
 #geome.insert_te(3, 10)
 #print(geome)
 
@@ -284,8 +288,6 @@ class LinkedListGenome(Genome):
             self.ID.append(self.count)
 
         self.active_lst.append(self.count)
-
-        #print(self.index_next)
 
         return self.count
 
