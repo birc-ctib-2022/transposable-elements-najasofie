@@ -128,9 +128,7 @@ str: useing join() which take linear time -> O(n)
 
 linked method:  
 
-insert_te: looping over all element before the position, there in the worst case are longer then the list. if the position is in a active te, the running time of the disable function gets added to the running time. then looping in the length of the te minus 1. last we append in the length of the te we are inserting.  
-
-disable_te:  
+insert_te: looping over all element before the position, there in the worst case are longer then the list. if the position is in a active te, the running time of the disable function gets added to the running time. then looping in the length of the te minus 1. last we append in the length of the te we are inserting.
 str: we are makering a while loop that runs in the length of the list, therefor O(n).  
 
 
