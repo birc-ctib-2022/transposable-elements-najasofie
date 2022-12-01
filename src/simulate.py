@@ -17,8 +17,8 @@ from dataclasses import dataclass
 class SimParams:
     """Holds simulation parameters."""
 
-    te_len: int = 200       # mean te length
-    te_offset: int = 500    # mean te move
+    te_len: int = 20       # mean te length
+    te_offset: int = 50    # mean te move
 
     # weight between insert,copy,disable
     weights: tuple[float, float, float] = (0.1, 2.0, 1.0)
@@ -81,11 +81,11 @@ def sim_te(n: int, k: int,
 if __name__ == '__main__':
     import timeit
     start_time = timeit.default_timer()
-    sim_te(1_000_000, 1000)
+    sim_te(1_000, 100)
     elapsed = timeit.default_timer() - start_time
     print("Python lists:", elapsed)
 
     start_time = timeit.default_timer()
-    sim_te(1_000_000, 1000, genome_class=LinkedListGenome)
+    sim_te(1_000, 1000, genome_class=LinkedListGenome)
     elapsed = timeit.default_timer() - start_time
     print("Linked lists:", elapsed)
