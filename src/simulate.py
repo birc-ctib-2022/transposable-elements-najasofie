@@ -17,8 +17,8 @@ from dataclasses import dataclass
 class SimParams:
     """Holds simulation parameters."""
 
-    te_len: int = 20       # mean te length
-    te_offset: int = 50    # mean te move
+    te_len: int = 200       # mean te length
+    te_offset: int = 500    # mean te move
 
     # weight between insert,copy,disable
     weights: tuple[float, float, float] = (0.1, 2.0, 1.0)
@@ -43,7 +43,6 @@ def sim_te(n: int, k: int,
            seed: int | None = None,
            genome_class: Type[Genome] = ListGenome) -> str:
     """Simulate a genome of initial size n for k operations.
-
     >>> sim_te(30, 10, seed = 1984, theta = SimParams(te_len=10))
     '---AAAA------------x--xAAAAxxx------AAAA-xxxxAAAA------'
     """
