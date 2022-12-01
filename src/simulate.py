@@ -81,11 +81,11 @@ def sim_te(n: int, k: int,
 if __name__ == '__main__':
     import timeit
     start_time = timeit.default_timer()
-    sim_te(1_000, 100)
+    sim_te(1_000_000, 1000)
     elapsed = timeit.default_timer() - start_time
     print("Python lists:", elapsed)
 
     start_time = timeit.default_timer()
-    sim_te(1_000, 1000, genome_class=LinkedListGenome)
+    sim_te(1_000_000, 1000, genome_class=LinkedListGenome)
     elapsed = timeit.default_timer() - start_time
     print("Linked lists:", elapsed)
