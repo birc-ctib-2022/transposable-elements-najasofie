@@ -213,10 +213,10 @@ class ListGenome(Genome):
 
 
 
-geome = ListGenome(20)
-print(geome)
-geome.insert_te(40, 10)
-print(geome)
+#geome = ListGenome(20)
+#print(geome)
+#geome.insert_te(40, 10)
+#print(geome)
 #geome.insert_te(3, 10)
 #print(geome)
 
