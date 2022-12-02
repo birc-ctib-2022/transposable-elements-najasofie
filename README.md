@@ -105,7 +105,7 @@ When you have implemented the two (or more) classes, describe the complexity of 
 | Function | ListGenome | linkedlistGenome |
 | --- | --- | --- |
 | init | O(n) | O(n) |
-| insert_te | O(m) + O(disable_te)  | O() |
+| insert_te | O(m) + O(disable_te)  | O(k+m) + O(disable_te |
 | copy_te | O(n+m) + O(insert_te)  | O(n+m) + O(insert_te) |
 | disable_te | O(n)  | O(n) |
 | active_te | O(1)  | O(1) |
@@ -113,7 +113,8 @@ When you have implemented the two (or more) classes, describe the complexity of 
 | str | O(n)  | O(n)  |
 
 n = the length of the genome   
-m = length of the te  
+m = length of the te
+k = position    
 
 Common to both methods  
 init: Makering empty lists take constant time, while appeneding to a list take O(n), because we append n times.  
@@ -123,12 +124,12 @@ active_te: returning a list take constant time, therefor O(1)
 len: Taking the length with the build in function len() of a list take constant time, therefor O(1)  
 
 List method:  
-insert_te: we tjek if the position (pos) is longer than the length and if the position is in a already active te, there both take constant time. But if the position is in a active te, the running time of the disable function gets added to the running time. Then we append m times (when m is the length of the te there is added).  
+insert_te: we tjek if the position (pos) is longer than the length and if the position is in a already active te, they both take constant time. But if the position is in a active te, the running time of the disable function gets added to the running time. Then we append m times (when m is the length of the te there is added).  
 str: useing join() which take linear time -> O(n)  
 
 linked method:  
 
-insert_te: looping over all element before the position, there in the worst case are longer then the list. if the position is in a active te, the running time of the disable function gets added to the running time. then looping in the length of the te minus 1. last we append in the length of the te we are inserting.  
+insert_te: looping over all element before the position, where in the worst case the position (k) could be longer then the list. if the position is in a active te, the running time of the disable function gets added to the running time. then looping in the length of the te minus 1 for appending to the index list. last we append in the length of the te we are inserting to the ID and genome list.  
 str: we are makering a while loop that runs in the length of the list, therefor O(n).  
 
 
